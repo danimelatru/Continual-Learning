@@ -12,4 +12,4 @@ cd $SLURM_SUBMIT_DIR
 
 module load anaconda3/2024.06/gcc-13.2.0
 
-/gpfs/users/fernandeda/.conda/envs/cl_env/bin/python continual_clip.py
+/gpfs/workdir/fernandeda/.conda/envs/cl_env/bin/python continual_clip.py
