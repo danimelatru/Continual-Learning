@@ -192,6 +192,6 @@ plt.title('Catastrophic Forgetting Mitigation: LoRA vs Full Fine-Tuning')
 plt.grid(axis='y', linestyle='--', alpha=0.5)
 
 # Save figure
-filename = "comparison_graph.png"
+filename = "media/comparison_graph.png"
 plt.savefig(filename)
 print(f"Graph saved as {filename}")

@@ -1,7 +1,7 @@
 #!/bin/bash
 #SBATCH --job-name=cl_lora
-#SBATCH --output=logs_%j.out
-#SBATCH --error=logs_%j.err
+#SBATCH --output=logs/logs_%j.out
+#SBATCH --error=logs/logs_%j.err
 #SBATCH --partition=gpu
 #SBATCH --gres=gpu:1
 #SBATCH --time=01:00:00
