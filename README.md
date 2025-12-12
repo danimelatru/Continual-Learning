@@ -37,6 +37,7 @@ cifar-lora-forgetting/
 ├── main.py              # Entry point to run the experiments
 ├── requirements.txt     # Python dependencies
 └── README.md            # Project documentation
+````
 
 ## 🚀 Installation
 
