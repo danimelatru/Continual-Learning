@@ -1,11 +1,28 @@
+# --- Python & Environment ---
 __pycache__/
-*.pyc
-*.png
-*.pdf
-*.pth
-*.ckpt
-checkpoints/
-results/
-logs/
-slurm-*.out
+*.py[cod]
+*$py.class
+.env
+venv/
+env/
+.conda/
 .ipynb_checkpoints/
+
+# --- IDE Settings ---
+.vscode/
+.idea/
+*.swp
+
+# --- Project Specific Outputs ---
+results_ft_A/
+results_ft_B/
+eval_results/
+
+data/
+.cache/
+
+media/
+
+# --- System ---
+.DS_Store
+Thumbs.db
