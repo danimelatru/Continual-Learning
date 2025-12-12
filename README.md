@@ -59,6 +59,7 @@ To run the full experiment pipeline (Data Split -> Fine-Tuning -> LoRA -> Plotti
 
 ```bash
 python main.py
+```
 
 ### Configuration
 You can modify hyperparameters in `src/config.py`:
