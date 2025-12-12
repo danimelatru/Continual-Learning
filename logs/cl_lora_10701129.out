@@ -41,3 +41,6 @@ Training Full Model on Task A...
 {'loss': 0.0466, 'learning_rate': 4.7442455242966755e-05, 'epoch': 0.26}
 {'loss': 0.0484, 'learning_rate': 4.680306905370844e-05, 'epoch': 0.32}
 {'loss': 0.039, 'learning_rate': 4.616368286445013e-05, 'epoch': 0.38}
+{'loss': 0.0516, 'learning_rate': 4.552429667519182e-05, 'epoch': 0.45}
+{'loss': 0.0418, 'learning_rate': 4.488491048593351e-05, 'epoch': 0.51}
+{'loss': 0.0408, 'learning_rate': 4.4245524296675195e-05, 'epoch': 0.58}

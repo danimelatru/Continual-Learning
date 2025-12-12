@@ -22,6 +22,7 @@ data/
 .cache/
 
 media/
+logs/
 
 # --- System ---
 .DS_Store
