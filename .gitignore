@@ -7,6 +7,7 @@ venv/
 env/
 .conda/
 .ipynb_checkpoints/
+.pytest_cache/
 
 # --- IDE Settings ---
 .vscode/
@@ -17,12 +18,17 @@ env/
 results_ft_A/
 results_ft_B/
 eval_results/
+outputs/
+multirun/
 
+# --- Data ---
 data/
 .cache/
 
+# --- Media & Logs ---
 media/
 logs/
+wandb/
 
 # --- System ---
 .DS_Store

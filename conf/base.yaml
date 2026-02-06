@@ -1,0 +1,32 @@
+defaults:
+  - _self_
+
+seed: 42
+
+model:
+  checkpoint: "google/vit-base-patch16-224"
+  num_labels: 10
+  ignore_mismatched_sizes: true
+
+lora:
+  r: 16
+  alpha: 16
+  dropout: 0.1
+  target_modules: ["query", "value"]
+
+data:
+  dataset_name: "cifar10"
+  batch_size: 32
+
+train:
+  epochs: 5
+  learning_rate: 5e-5
+  output_dir_ft_a: "./results_ft_A"
+  output_dir_ft_b: "./results_ft_B"
+  eval_results_dir: "./eval_results"
+  logging_steps: 50
+
+wandb:
+  project: "cifar-continual-learning"
+  entity: null # Set your username if needed, or leave null
+  name: "vit-lora-forgetting"

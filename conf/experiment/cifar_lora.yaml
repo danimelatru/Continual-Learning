@@ -1,0 +1,10 @@
+# @package _global_
+defaults:
+  - override /model: base_model
+
+hydra:
+  run:
+    dir: outputs/${now:%Y-%m-%d}/${now:%H-%M-%S}
+
+wandb:
+  name: "cifar10-lora-experiment"

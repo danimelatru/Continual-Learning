@@ -1,7 +1,21 @@
-# src/utils.py
 import torch
-import matplotlib.pyplot as plt
+import numpy as np
+import random
 import os
+import matplotlib.pyplot as plt
+
+def set_seed(seed=42):
+    """Sets the seed for reproducibility across torch, numpy, and random."""
+    random.seed(seed)
+    np.random.seed(seed)
+    torch.manual_seed(seed)
+    torch.cuda.manual_seed_all(seed)
+    # Ensure deterministic behavior for cuDNN
+    torch.backends.cudnn.deterministic = True
+    torch.backends.cudnn.benchmark = False
+    os.environ['PYTHONHASHSEED'] = str(seed)
+    print(f"Global seed set to: {seed}")
+
 
 def print_section(title):
     print(f"\n{'='*20} {title} {'='*20}")
@@ -43,3 +57,25 @@ def plot_results(loss_ideal, loss_ft, loss_lora, save_path):
 
     plt.savefig(save_path)
     print(f"Graph saved as {save_path}")
+
+def calculate_bwt(acc_matrix):
+    """
+    Calculates Backward Transfer (BWT) from an accuracy matrix R.
+    R[i, j] = accuracy on task j after training on task i.
+    BWT = 1 / (T-1) * sum_{i=1}^{T-1} (R_{T,i} - R_{i,i})
+    
+    For 2 tasks (A, B):
+    BWT = R_{B,A} - R_{A,A}
+    """
+    # Assuming acc_matrix is a dictionary or simple list for this specific 2-task experiment
+    # { 'A': {'A': val, 'B': val}, 'B': {'A': val, 'B': val} }
+    # But for now, let's keep it simple as requested in the plan
+    pass
+
+def simple_bwt(acc_after_a, acc_after_b):
+    """
+    Simple BWT for 2-task scenario.
+    acc_after_a: Accuracy on Task A after training on Task A
+    acc_after_b: Accuracy on Task A after training on Task B
+    """
+    return acc_after_b - acc_after_a

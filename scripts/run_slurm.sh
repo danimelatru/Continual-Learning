@@ -11,12 +11,14 @@
 
 module purge
 source ~/.bashrc
-conda activate continual_learning
+conda activate research
 
-PROJECT_ROOT=/gpfs/workdir/fernandeda/continual_learning
+# Automatically detect the project root (assuming script is in scripts/)
+PROJECT_ROOT=$(cd "$(dirname "$0")/.." && pwd)
 export PYTHONPATH="$PROJECT_ROOT:$PYTHONPATH"
 
-mkdir -p logs
+# Create logs directory if it doesn't exist
+mkdir -p "$PROJECT_ROOT/logs"
 cd "$PROJECT_ROOT"
 
 echo "=========================================="
@@ -24,17 +26,11 @@ echo "[DEBUG SLURM] Hostname: $(hostname)"
 echo "[DEBUG SLURM] Working directory: $(pwd)"
 echo "[DEBUG SLURM] Python: $(which python)"
 echo "[DEBUG SLURM] CUDA_VISIBLE_DEVICES: $CUDA_VISIBLE_DEVICES"
+echo "[DEBUG SLURM] Arguments: $@"
 echo "=========================================="
 
 nvidia-smi || echo "[DEBUG SLURM] nvidia-smi failed"
 
-python -u - << 'EOF'
-import torch, os
-print("[DEBUG PY] torch:", torch.__file__)
-print("[DEBUG PY] version:", torch.__version__)
-print("[DEBUG PY] cuda available:", torch.cuda.is_available())
-print("[DEBUG PY] cuda count:", torch.cuda.device_count())
-print("[DEBUG PY] visible:", os.environ.get("CUDA_VISIBLE_DEVICES"))
-EOF
-
-python -u main.py
+# Run the main script with Hydra arguments passed from sbatch
+# Usage: sbatch scripts/run_slurm.sh train.epochs=10 lora.r=64
+python -u main.py "$@"

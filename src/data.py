@@ -1,11 +1,12 @@
 # src/data.py
 from datasets import load_dataset
 from transformers import AutoImageProcessor
-from .config import Config
+from omegaconf import DictConfig
 
 class DataHandler:
-    def __init__(self):
-        self.processor = AutoImageProcessor.from_pretrained(Config.MODEL_CHECKPOINT)
+    def __init__(self, cfg: DictConfig):
+        self.cfg = cfg
+        self.processor = AutoImageProcessor.from_pretrained(cfg.model.checkpoint)
 
     def _transform(self, example_batch):
         key = 'image' if 'image' in example_batch else 'img'
@@ -14,8 +15,8 @@ class DataHandler:
         return inputs
 
     def load_and_split_data(self):
-        print("Loading and Splitting CIFAR-10...")
-        dataset = load_dataset("cifar10")
+        print(f"Loading and Splitting {self.cfg.data.dataset_name}...")
+        dataset = load_dataset(self.cfg.data.dataset_name)
 
         # Define split logic
         # Task A: 0-4, Task B: 5-9
