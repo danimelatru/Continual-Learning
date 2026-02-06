@@ -16,7 +16,7 @@ lora:
 
 data:
   dataset_name: "cifar10"
-  batch_size: 32
+  batch_size: 128
 
 train:
   epochs: 5
@@ -25,6 +25,8 @@ train:
   output_dir_ft_b: "./results_ft_B"
   eval_results_dir: "./eval_results"
   logging_steps: 50
+  fp16: true
+  dataloader_num_workers: 4
 
 wandb:
   project: "cifar-continual-learning"

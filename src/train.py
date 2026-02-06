@@ -14,7 +14,10 @@ def train_model(model, dataset, output_dir, cfg: DictConfig):
         logging_steps=cfg.train.logging_steps,
         save_strategy="no",
         remove_unused_columns=False,
-        report_to="wandb" if cfg.wandb.project else "none"
+        report_to="wandb" if cfg.wandb.project else "none",
+        fp16=cfg.train.fp16,
+        dataloader_num_workers=cfg.train.dataloader_num_workers,
+        disable_tqdm=True # Silence TQDM in cluster logs
     )
     
     trainer = Trainer(
@@ -28,12 +31,15 @@ def train_model(model, dataset, output_dir, cfg: DictConfig):
 
 def evaluate_model(model, dataset, name, cfg: DictConfig):
     """Generic evaluation wrapper."""
-    print(f"Evaluating on {name}...")
+    print(f"\033[94m>>> Evaluating on {name}...\033[0m")
     
     args_eval = TrainingArguments(
         output_dir=cfg.train.eval_results_dir, 
+        per_device_eval_batch_size=cfg.data.batch_size,
         remove_unused_columns=False,
-        report_to="wandb" if cfg.wandb.project else "none"
+        report_to="none", # Don't clutter WandB with tiny intermediate eval steps
+        fp16=cfg.train.fp16,
+        disable_tqdm=True # Silence TQDM in logs
     )
     
     trainer = Trainer(
@@ -43,9 +49,17 @@ def evaluate_model(model, dataset, name, cfg: DictConfig):
     )
     
     eval_result = trainer.evaluate(dataset) 
-    print(f"Accuracy/Loss on {name}: {eval_result}")
+    
+    # Ensure eval_loss exists to avoid KeyError in main.py
+    if 'eval_loss' not in eval_result:
+        # This can happen if the model is in a weird state or labels are missing
+        eval_result['eval_loss'] = 0.0
+        print(f"\033[93mWarning: 'eval_loss' not found for {name}. Defaulting to 0.0\033[0m")
+
+    print(f"Results for {name}: Loss {eval_result['eval_loss']:.4f}")
     
     if cfg.wandb.project:
-        wandb.log({f"eval/{name}": eval_result})
+        # Log to wandb with a cleaner name
+        wandb.log({f"eval/{name.replace(' ', '_')}": eval_result['eval_loss']})
         
     return eval_result

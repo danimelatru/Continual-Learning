@@ -72,9 +72,14 @@ def main(cfg: DictConfig):
 
 
     # --- RESULTS ---
-    print_section("FINAL RESULTS")
-    print(f"Baseline - Loss on A after learning B: {loss_ft:.4f}")
-    print(f"LoRA     - Loss on A after learning B: {loss_lora:.4f}")
+    print_section("FINAL RESULTS SUMMARY")
+    
+    # Create a nice markdown-style table for the logs
+    print("| Experiment | Metric | Task A (Ideal) | Task A (After B) | BWT (Forget) |")
+    print("|------------|--------|----------------|------------------|--------------|")
+    print(f"| Baseline   | Loss   | {loss_ideal:.4f} | {loss_ft:.4f} | {bwt_ft:.4f} |")
+    print(f"| LoRA       | Loss   | {loss_ideal:.4f}* | {loss_lora:.4f} | {bwt_lora:.4f} |")
+    print("\n*Note: Ideal LoRA loss on A is assumed similar for BWT calculation context.")
 
     plot_results(loss_ideal, loss_ft, loss_lora, cfg.plot_filename if 'plot_filename' in cfg else "media/comparison_graph.png")
     
@@ -86,6 +91,8 @@ def main(cfg: DictConfig):
             "final/bwt_ft": bwt_ft,
             "final/bwt_lora": bwt_lora
         })
+        # Log the plot as an artifact
+        wandb.log({"results/plot": wandb.Image("media/comparison_graph.png")})
         wandb.finish()
 
 if __name__ == "__main__":

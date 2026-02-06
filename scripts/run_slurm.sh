@@ -13,23 +13,30 @@ module purge
 source ~/.bashrc
 conda activate research
 
-# Automatically detect the project root (assuming script is in scripts/)
-PROJECT_ROOT=$(cd "$(dirname "$0")/.." && pwd)
+# Handle Project Root detection for both SLURM (sbatch) and local execution
+if [ -n "$SLURM_SUBMIT_DIR" ]; then
+    # When running via sbatch, use the submission directory
+    PROJECT_ROOT="$SLURM_SUBMIT_DIR"
+else
+    # When running locally, assume script is in scripts/ relative to root
+    PROJECT_ROOT=$(cd "$(dirname "$0")/.." && pwd)
+fi
+
 export PYTHONPATH="$PROJECT_ROOT:$PYTHONPATH"
 
-# Create logs directory if it doesn't exist
+# WandB Cluster Fixes: 
+# Ensure WandB uses project directory for temp files and cache (avoiding /scratch or /tmp permission issues)
+export WANDB_DIR="$PROJECT_ROOT"
+export WANDB_CACHE_DIR="$PROJECT_ROOT/.cache/wandb"
+export WANDB_CONFIG_DIR="$PROJECT_ROOT/.config/wandb"
+export WANDB_START_METHOD="thread"
+
+# Create necessary directories
 mkdir -p "$PROJECT_ROOT/logs"
+mkdir -p "$WANDB_CACHE_DIR"
+mkdir -p "$WANDB_CONFIG_DIR"
+
 cd "$PROJECT_ROOT"
-
-echo "=========================================="
-echo "[DEBUG SLURM] Hostname: $(hostname)"
-echo "[DEBUG SLURM] Working directory: $(pwd)"
-echo "[DEBUG SLURM] Python: $(which python)"
-echo "[DEBUG SLURM] CUDA_VISIBLE_DEVICES: $CUDA_VISIBLE_DEVICES"
-echo "[DEBUG SLURM] Arguments: $@"
-echo "=========================================="
-
-nvidia-smi || echo "[DEBUG SLURM] nvidia-smi failed"
 
 # Run the main script with Hydra arguments passed from sbatch
 # Usage: sbatch scripts/run_slurm.sh train.epochs=10 lora.r=64
